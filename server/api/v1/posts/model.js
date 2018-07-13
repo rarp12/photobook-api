@@ -1,9 +1,45 @@
 const mongoose = require('mongoose');
 
-const post = {
-  photo_url: String,
-  description: String,
-  location: String,
+const {
+  Schema,
+} = mongoose;
+
+const fields = {
+  photo_url: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  location: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: 'comment',
+    required: true,
+  }],
 };
 
-module.exports = mongoose.model('post', post);
+const references = {
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+};
+
+const post = new Schema(Object.assign(fields, references), {
+  timestamps: true,
+});
+
+module.exports = {
+  Model: mongoose.model('post', post),
+  fields,
+  references,
+};
